@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icon-css/flag-icon.min.css') }}">
     <title>@yield('title', 'Dashboard')</title>
     
-    <style>
+    <!-- <style>
         html, body {
             height: 100%;
         }
@@ -45,7 +45,7 @@
             position: relative;
             z-index: 10;
         }
-    </style>
+    </style> -->
 </head>
 <body>
     <div class="dashboard-main-wrapper">
@@ -144,19 +144,28 @@
                                         <a class="nav-link" href="{{ route('products.index') }}"><i class="fab fa-fw fa-wpforms"></i>View Products</a>
                                     </li>
                                 @endcan
-                                @can('view-part')
-                                    @isset($product)
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('products.parts.index', $product->id) }}"><i class="fas fa-fw fa-inbox"></i>Manage Parts</a>
-                                        </li>
-                                    @endisset
-                                @endcan
-                                <!-- Maintenance Link -->
-                                @can('view-maintenance')
+                                @canany(['create-part', 'edit-part', 'delete-part'])
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('maintenance.index') }}"><i class="fas fa-fw fa-chart-pie"></i>Manage Maintenance</a>
+                                        <a class="nav-link" href="{{ route('parts.index') }}"><i class="fas fa-fw fa-table"></i>Manage Part</a>
                                     </li>
-                                @endcan
+                                @endcanany 
+                                @canany(['create-maintenance', 'edit-maintenance', 'delete-maintenance'])
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('maintenances.index') }}"><i class="fas fa-fw fa-table"></i>Manage maintenance</a>
+                                    </li>
+                                @endcanany
+                                @canany(['create-repair', 'edit-repair', 'delete-repair'])
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('repair.index') }}"><i class="fas fa-fw fa-table"></i>Manage Repair</a>
+                                    </li>
+                                @endcanany
+                                <!-- @canany(['view-requ', 'edit-repair', 'delete-repair']) -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('request.stock.index') }}"><i class="fas fa-fw fa-table"></i>History Request</a>
+                                </li>
+                                <!-- @endcanany -->
+
+                                <!-- Maintenance Link -->
                                 <li class="nav-item">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
@@ -188,10 +197,13 @@
         
         <div class="dashboard-wrapper">
             <div class="container-fluid dashboard-content">
+            <div class="dashboard-ecommerce">
+            <div class="container-fluid dashboard-content">
                 @yield('content')
             </div>
         </div>
-
+        </div>
+        </div>
         <div class="footer">
             <div class="container-fluid">
                 <div class="row">
@@ -202,7 +214,7 @@
             </div>
         </div>
     </div>
-
+    
     <script src="{{ asset('assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('assets/vendor/slimscroll/jquery.slimscroll.js') }}"></script>
@@ -214,5 +226,7 @@
     <script src="{{ asset('assets/vendor/charts/c3charts/c3.min.js') }}"></script>
     <script src="{{ asset('assets/libs/js/dashboard-ecommerce.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery/jquery.validate.min.js') }}"></script>
+
+    @yield('scripts')
 </body>
 </html>

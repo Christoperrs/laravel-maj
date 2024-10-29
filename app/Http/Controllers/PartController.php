@@ -17,70 +17,111 @@ class PartController extends Controller
         $this->middleware('permission:delete-part', ['only' => ['destroy']]);
     }
 
-    // Menampilkan daftar semua produk dan bagian mereka
     public function index()
     {
-        $products = Product::with('parts')->get(); // Ambil semua produk beserta bagian-bagiannya
-        return view('parts.index', compact('products'));
+        // Only get parts with status 1 (active) and load the associated product
+        $parts = Part::with('product')
+                    ->where('status', 1)
+                    ->get();
+
+        // Pass 'parts' data to the view
+        return view('parts.index', compact('parts'));
     }
 
-    // Menampilkan form untuk membuat bagian baru
-    public function create($productId)
+    public function create()
     {
-        $product = Product::findOrFail($productId);
-        return view('parts.create', compact('product'));
+        return view('parts.create');
     }
 
     // Menyimpan bagian baru ke database
-    public function store(Request $request, $productId)
+    public function store(Request $request)
     {
+        // Validate the request data
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
+            'name' => 'required|array',
+            'name.*' => 'string|max:255',
+            'description' => 'nullable|array',
+            'description.*' => 'nullable|array', // Update to allow nested array
+            'qty' => 'required|array',
+            'qty.*' => 'integer|min:1',
+            
         ]);
 
-        $part = new Part();
-        $part->name = $request->name;
-        $part->description = $request->description;
-        $part->product_id = $productId;
-        $part->save();
+        $userId = auth()->user()->id;
 
-        return redirect()->route('products.parts.index', $productId)
-                         ->with('success', 'Part added successfully.');
+        // Loop through each part and save it to the database
+        for ($i = 0; $i < count($request->name); $i++) {
+            $part = new Part();
+            $part->name = $request->name[$i];
+            $part->qty = $request->qty[$i];
+            $part->status = 1; 
+            $part->created_by = $userId; 
+            $part->updated_by = $userId; 
+            $part->qty_order = $request->qty_order[$i];
+            $part->qty_minimum = $request->qty_minimum[$i];
+            // Handle multiple descriptions
+            $part->description = implode(',', $request->description[$i]); // Concatenate descriptions into a single string
+            $part->save();
+        }
+
+        return redirect()->route('parts.index')->with('success', 'Parts added successfully.');
     }
 
+    
+
     // Menampilkan form untuk mengedit bagian yang ada
-    public function edit($productId, $partId)
+    public function edit( $partId)
     {
         $part = Part::findOrFail($partId);
-        $product = Product::findOrFail($productId);
-        return view('parts.edit', compact('part', 'product'));
+        return view('parts.edit', compact('part'));
     }
 
     // Memperbarui bagian yang ada di database
-    public function update(Request $request, $productId, $partId)
+    public function update(Request $request, $partId)
     {
+        // Validate request data
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
+            'qty' => 'required|integer|min:1',
         ]);
 
+        // Find the part by its ID and update
         $part = Part::findOrFail($partId);
         $part->name = $request->name;
         $part->description = $request->description;
+        $part->qty = $request->qty;
+        $part->qty_minimum = $request->qty_minimum;
+        $part->qty_order = $request->qty_order;
+        $part->updated_by = auth()->user()->id; // Update the updated_by field with the logged-in user
         $part->save();
 
-        return redirect()->route('products.parts.index', $productId)
-                         ->with('success', 'Part updated successfully.');
+        return redirect()->route('parts.index')
+                        ->with('success', 'Part updated successfully.');
     }
+
+
 
     // Menghapus bagian dari database
-    public function destroy($productId, $partId)
+    public function destroy($partId)
     {
+        // Find the part by its ID
         $part = Part::findOrFail($partId);
-        $part->delete();
+        
+        // Set the status to 0 (inactive) instead of deleting
+        $part->status = 0;
+        $part->updated_by = auth()->user()->id; // Track who marked it as deleted
+        $part->save();
 
-        return redirect()->route('products.parts.index', $productId)
-                         ->with('success', 'Part deleted successfully.');
+        // Redirect with success message
+        return redirect()->route('parts.index')
+                        ->with('success', 'Part marked as deleted successfully.');
     }
+
+    public function getPartsByProduct($productId)
+    {
+        $parts = Part::where('product_id', $productId)->get();
+        return response()->json($parts);
+    }
+
 }

@@ -14,11 +14,24 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description');
-            $table->string('image')->nullable(); // Kolom untuk menyimpan nama file gambar
+            $table->text('line');
+            $table->string('barcode')->nullable(); 
+            $table->string('image')->nullable();
+            $table->string('customer')->nullable(); 
+            $table->string('model')->nullable(); 
+            $table->string('part_no')->nullable(); 
+            $table->string('no_job')->nullable(); 
+            $table->string('process')->nullable(); 
+            $table->string('machine')->nullable();
+            $table->integer('frequency_production')->nullable();
+            $table->string('tension')->nullable();
+            $table->integer('status')->nullable(); 
             $table->timestamps();
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); // Foreign key to users table
+            $table->foreignId('updated_by')->constrained('users')->onDelete('cascade'); // Foreign key to users table
         });
     }
+    
 
     /**
      * Reverse the migrations.

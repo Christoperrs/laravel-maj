@@ -34,10 +34,13 @@ class RoleSeeder extends Seeder
             'edit-part',
             'delete-part',
             'view-part', 
-            'create-maintenance', // Tambahkan permission untuk create maintenance
-            'edit-maintenance',   // Tambahkan permission untuk edit maintenance
-            'delete-maintenance', // Tambahkan permission untuk delete maintenance
+            'create-maintenance', 
+            'edit-maintenance',   
+            'delete-maintenance', 
             'view-maintenance', 
+            'view-repair', 
+            'approve-foreman',
+            'approve-section'
         ]);
         $admin->givePermissionTo([
             'create-user',
@@ -51,7 +54,11 @@ class RoleSeeder extends Seeder
         $productManager->givePermissionTo([
             'create-product',
             'edit-product',
-            'delete-product'
+            'delete-product',
+            'view-repair', 
+            'approve-foreman',
+            'approve-section'
+
         ]);
 
         $user->givePermissionTo([

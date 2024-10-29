@@ -164,7 +164,9 @@ body {
     background-color: #efeff6;
     -webkit-font-smoothing: antialiased;
 }
-
+th {
+    text-align: center; /* Center align text in table header */
+}
 h1,
 h2,
 h3,

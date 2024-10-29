@@ -2,19 +2,19 @@
 
 @section('content')
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="page-header">
-                                <h2 class="pageheader-title">Management Roles Systems</h2>
-                                <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
-                                <div class="page-breadcrumb">
-                                    <nav aria-label="breadcrumb">
-                                        <ol class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">New Armada</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">Tooling Division</li>
-                                        </ol>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
+    <div class="page-header">
+        <h2 class="pageheader-title">Management Roles Systems</h2>
+        <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
+        <div class="page-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">New Armada</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Tooling Division</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
 <div class="card">
     <div class="card-header">Manage Roles</div>
     <div class="card-body">
